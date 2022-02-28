@@ -3,6 +3,10 @@ Building a new model to assess HPV16 lineage
 Laura Asensio Puig
 24/02/2022
 
+``` r
+knitr::opts_chunk$set(fig.path='Figs/')
+```
+
 ## Load and prepare datasets
 
 To build the model we collected samples from NCBI webpage (n = xxx) and
@@ -118,7 +122,7 @@ barplot(prop.table(table(PHENO$Sublineage)), col = col_sublin, main = "Sublineag
 mtext(message, outer = T, cex = 1)
 ```
 
-![](Lineage_model_files/figure-gfm/load%20and%20prepare-1.png)<!-- -->
+![](Figs/load%20and%20prepare-1.png)<!-- -->
 
 ## GWAS: Find lineage-related nucleotides
 
@@ -3292,9 +3296,8 @@ summary(results)
 dotplot(results) 
 ```
 
-![](Lineage_model_files/figure-gfm/selecting%20best%20model-1.png)<!-- -->
-SVM, KNN and RF showed similar accuracy and kappa values and LDA-based
-model failed.
+![](Figs/selecting%20best%20model-1.png)<!-- --> SVM, KNN and RF showed
+similar accuracy and kappa values and LDA-based model failed.
 
 ## Validation
 
@@ -3358,7 +3361,7 @@ mtext("KNN", outer = F, cex = 1)
 mtext("Validation Matrix", outer = T, cex = 2)
 ```
 
-![](Lineage_model_files/figure-gfm/validation-1.png)<!-- -->
+![](Figs/validation-1.png)<!-- -->
 
 ``` r
 ## 2) Prediction and validation with RF
@@ -3370,7 +3373,7 @@ plot.cm(predictions.rf, validation$Lineage, rescales = F)
 mtext("Random Forest Validation Matrix", outer = T, cex = 2)
 ```
 
-![](Lineage_model_files/figure-gfm/validation-2.png)<!-- -->
+![](Figs/validation-2.png)<!-- -->
 
 ``` r
 save(fit.rf, file = paste(wd_results, "HPV16_Lineage_MODEL_rf.Rdata", sep = ""))
