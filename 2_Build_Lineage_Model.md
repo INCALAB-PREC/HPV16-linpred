@@ -3,10 +3,6 @@ Building a new model to assess HPV16 lineage
 Laura Asensio Puig
 24/02/2022
 
-``` r
-knitr::opts_chunk$set(fig.path='Figs/')
-```
-
 ## Load and prepare datasets
 
 To build the model we collected samples from NCBI webpage (n = xxx) and
@@ -39,6 +35,10 @@ suppressMessages(library(RColorBrewer)) # palette colors
 suppressMessages(library(viridis)) # palette colors
 suppressMessages(library(kableExtra)) # nice tables
 suppressMessages(library(scales)) #write in scientific notation
+suppressMessages(library(ggplot2)) #manhattan plot
+# suppressMessages(library(dplyr)) #manhattan plot
+# suppressMessages(library(grid)) #manhattan plot
+# suppressMessages(library(gridExtra)) #manhattan plot
 
 # Load internal functions
 source(paste(PC_path, "Codes/", "Functions.R", sep = "/"))
@@ -221,7 +221,7 @@ df <- df[-ncol(df)]
 
 df <-df[order(df$position),]
 
-# #AFEGIR GENES
+# Add genes name
 df$gene <- "empty"
 for (i in 1:nrow(df)){
   xx <- gene.annotation(df[i,"position"],gene_annotation)[2]
@@ -304,7 +304,7 @@ t
 496
 </td>
 <td style="text-align:right;">
-94
+95
 </td>
 <td style="text-align:left;">
 7.38e+03
@@ -403,7 +403,7 @@ A/B.snp350T
 t
 </td>
 <td style="text-align:right;">
-287
+286
 </td>
 <td style="text-align:left;">
 g
@@ -415,13 +415,13 @@ g
 0.43
 </td>
 <td style="text-align:right;">
-506
+505
 </td>
 <td style="text-align:right;">
 98
 </td>
 <td style="text-align:left;">
-2.16e-01
+2.15e-01
 </td>
 <td style="text-align:left;">
 0.002
@@ -441,7 +441,7 @@ A/C.snp403A
 a
 </td>
 <td style="text-align:right;">
-487
+486
 </td>
 <td style="text-align:left;">
 g
@@ -453,13 +453,13 @@ g
 0.06
 </td>
 <td style="text-align:right;">
-520
+519
 </td>
 <td style="text-align:right;">
 99
 </td>
 <td style="text-align:left;">
-1.53e+03
+1.52e+03
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -485,19 +485,19 @@ a
 g
 </td>
 <td style="text-align:right;">
-123
+122
 </td>
 <td style="text-align:right;">
 0.24
 </td>
 <td style="text-align:right;">
-520
+519
 </td>
 <td style="text-align:right;">
 99
 </td>
 <td style="text-align:left;">
-1.36e+01
+1.38e+01
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -555,7 +555,7 @@ B/D.snp967G
 g
 </td>
 <td style="text-align:right;">
-117
+115
 </td>
 <td style="text-align:left;">
 a
@@ -567,13 +567,13 @@ a
 0.06
 </td>
 <td style="text-align:right;">
-124
+122
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-5.00e-02
+5.11e-02
 </td>
 <td style="text-align:left;">
 0.007
@@ -593,7 +593,7 @@ C/D.snp967G
 g
 </td>
 <td style="text-align:right;">
-126
+124
 </td>
 <td style="text-align:left;">
 a
@@ -605,13 +605,13 @@ a
 0.05
 </td>
 <td style="text-align:right;">
-133
+131
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-6.67e-02
+6.82e-02
 </td>
 <td style="text-align:left;">
 0.014
@@ -646,7 +646,7 @@ g
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 3.12e+04
@@ -669,25 +669,25 @@ A/D.snp1200T
 t
 </td>
 <td style="text-align:right;">
-483
+482
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-89
+87
 </td>
 <td style="text-align:right;">
-0.16
+0.15
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-1.41e+04
+1.37e+04
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -707,7 +707,7 @@ A/C.snp1416C
 c
 </td>
 <td style="text-align:right;">
-490
+489
 </td>
 <td style="text-align:left;">
 t
@@ -719,13 +719,13 @@ t
 0.06
 </td>
 <td style="text-align:right;">
-523
+522
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-1.54e+03
+1.53e+03
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -760,7 +760,7 @@ c
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 3.12e+04
@@ -798,7 +798,7 @@ a
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 4.52e-02
@@ -836,7 +836,7 @@ a
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 2.12e+02
@@ -950,7 +950,7 @@ a
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 2.92e+03
@@ -1026,7 +1026,7 @@ c
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 5.04e+03
@@ -1064,7 +1064,7 @@ t
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 7.67e+03
@@ -1102,7 +1102,7 @@ t
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 5.04e+03
@@ -1140,7 +1140,7 @@ c
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 1.04e+03
@@ -1178,7 +1178,7 @@ t
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 2.62e+02
@@ -1201,25 +1201,25 @@ A/D.snp2586T
 t
 </td>
 <td style="text-align:right;">
-481
+480
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-91
+89
 </td>
 <td style="text-align:right;">
 0.16
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-4.32e+04
+4.22e+04
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1239,25 +1239,25 @@ A/D.snp2650G
 g
 </td>
 <td style="text-align:right;">
-498
+497
 </td>
 <td style="text-align:left;">
 a
 </td>
 <td style="text-align:right;">
-74
+72
 </td>
 <td style="text-align:right;">
 0.13
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-1.95e+03
+1.89e+03
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1277,7 +1277,7 @@ B/D.snp2650A
 a
 </td>
 <td style="text-align:right;">
-74
+72
 </td>
 <td style="text-align:left;">
 g
@@ -1286,16 +1286,16 @@ g
 50
 </td>
 <td style="text-align:right;">
-0.40
+0.41
 </td>
 <td style="text-align:right;">
-124
+122
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-7.71e-03
+7.92e-03
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1315,25 +1315,25 @@ A/D.snp3161C
 c
 </td>
 <td style="text-align:right;">
-528
+526
 </td>
 <td style="text-align:left;">
 t
 </td>
 <td style="text-align:right;">
-44
+43
 </td>
 <td style="text-align:right;">
 0.08
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-2.05e+02
+2.04e+02
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1353,25 +1353,25 @@ A/D.snp3181A
 a
 </td>
 <td style="text-align:right;">
-524
+522
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-48
+47
 </td>
 <td style="text-align:right;">
 0.08
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-5.13e+02
+5.12e+02
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1391,25 +1391,25 @@ B/D.snp3181A
 a
 </td>
 <td style="text-align:right;">
-72
+71
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-52
+51
 </td>
 <td style="text-align:right;">
 0.42
 </td>
 <td style="text-align:right;">
-124
+122
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-5.98e+00
+5.99e+00
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1429,25 +1429,25 @@ C/D.snp3181A
 a
 </td>
 <td style="text-align:right;">
-79
+78
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-54
+53
 </td>
 <td style="text-align:right;">
-0.41
+0.40
 </td>
 <td style="text-align:right;">
-133
+131
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-5.34e+00
+5.35e+00
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1467,25 +1467,25 @@ B/D.snp3387T
 t
 </td>
 <td style="text-align:right;">
-75
+74
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-49
+48
 </td>
 <td style="text-align:right;">
-0.40
+0.39
 </td>
 <td style="text-align:right;">
-124
+122
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-3.57e+01
+3.58e+01
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1505,7 +1505,7 @@ A/D.snp3410T
 t
 </td>
 <td style="text-align:right;">
-451
+448
 </td>
 <td style="text-align:left;">
 c
@@ -1517,13 +1517,13 @@ c
 0.21
 </td>
 <td style="text-align:right;">
-571
+568
 </td>
 <td style="text-align:right;">
 99
 </td>
 <td style="text-align:left;">
-2.78e-01
+2.84e-01
 </td>
 <td style="text-align:left;">
 0.002
@@ -1543,7 +1543,7 @@ C/D.snp3431G
 g
 </td>
 <td style="text-align:right;">
-91
+89
 </td>
 <td style="text-align:left;">
 a
@@ -1555,13 +1555,13 @@ a
 0.32
 </td>
 <td style="text-align:right;">
-133
+131
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-2.71e-04
+2.77e-04
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1587,19 +1587,19 @@ g
 a
 </td>
 <td style="text-align:right;">
-131
+130
 </td>
 <td style="text-align:right;">
 0.25
 </td>
 <td style="text-align:right;">
-523
+522
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-1.78e+02
+1.80e+02
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1619,25 +1619,25 @@ A/D.snp3664T
 t
 </td>
 <td style="text-align:right;">
-514
+512
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-57
+56
 </td>
 <td style="text-align:right;">
 0.10
 </td>
 <td style="text-align:right;">
-571
+568
 </td>
 <td style="text-align:right;">
 99
 </td>
 <td style="text-align:left;">
-7.66e+02
+7.73e+02
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1657,25 +1657,25 @@ B/D.snp3664T
 t
 </td>
 <td style="text-align:right;">
-64
+63
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-60
+59
 </td>
 <td style="text-align:right;">
 0.48
 </td>
 <td style="text-align:right;">
-124
+122
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-1.16e+01
+1.17e+01
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1701,19 +1701,19 @@ c
 a
 </td>
 <td style="text-align:right;">
-202
+201
 </td>
 <td style="text-align:right;">
 0.39
 </td>
 <td style="text-align:right;">
-513
+512
 </td>
 <td style="text-align:right;">
 99
 </td>
 <td style="text-align:left;">
-2.80e+01
+2.82e+01
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1733,25 +1733,25 @@ A/D.snp3706T
 t
 </td>
 <td style="text-align:right;">
-477
+476
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-95
+93
 </td>
 <td style="text-align:right;">
-0.17
+0.16
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-8.57e+03
+8.36e+03
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -1862,7 +1862,7 @@ a
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 8.46e-02
@@ -1938,7 +1938,7 @@ g
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 4.32e+02
@@ -1976,7 +1976,7 @@ a
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 3.12e+04
@@ -2018,6 +2018,82 @@ g
 </td>
 <td style="text-align:left;">
 1.23e+03
+</td>
+<td style="text-align:left;">
+&lt;0.001
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A/D.snp4171A
+</td>
+<td style="text-align:right;">
+4171
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:right;">
+482
+</td>
+<td style="text-align:left;">
+t
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+519
+</td>
+<td style="text-align:right;">
+91
+</td>
+<td style="text-align:left;">
+8.76e+02
+</td>
+<td style="text-align:left;">
+&lt;0.001
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A/D.snp4176C
+</td>
+<td style="text-align:right;">
+4176
+</td>
+<td style="text-align:left;">
+c
+</td>
+<td style="text-align:right;">
+303
+</td>
+<td style="text-align:left;">
+t
+</td>
+<td style="text-align:right;">
+187
+</td>
+<td style="text-align:right;">
+0.38
+</td>
+<td style="text-align:right;">
+519
+</td>
+<td style="text-align:right;">
+91
+</td>
+<td style="text-align:left;">
+1.27e+01
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2090,7 +2166,7 @@ t
 488
 </td>
 <td style="text-align:right;">
-94
+95
 </td>
 <td style="text-align:left;">
 2.34e+02
@@ -2100,44 +2176,6 @@ t
 </td>
 <td style="text-align:left;">
 NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-A/D.snp4410A
-</td>
-<td style="text-align:right;">
-4410
-</td>
-<td style="text-align:left;">
-a
-</td>
-<td style="text-align:right;">
-543
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-0.05
-</td>
-<td style="text-align:right;">
-572
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:left;">
-6.37e+01
-</td>
-<td style="text-align:left;">
-&lt;0.001
-</td>
-<td style="text-align:left;">
-L2
 </td>
 </tr>
 <tr>
@@ -2166,7 +2204,7 @@ a
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 3.06e+03
@@ -2189,28 +2227,28 @@ A/D.snp5045G
 g
 </td>
 <td style="text-align:right;">
-520
+518
 </td>
 <td style="text-align:left;">
 a
 </td>
 <td style="text-align:right;">
-52
+51
 </td>
 <td style="text-align:right;">
 0.09
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-1.94e-01
+2.02e-01
 </td>
 <td style="text-align:left;">
-0.025
+0.029
 </td>
 <td style="text-align:left;">
 L2
@@ -2227,25 +2265,25 @@ A/D.snp5142G
 g
 </td>
 <td style="text-align:right;">
-481
+480
 </td>
 <td style="text-align:left;">
 a
 </td>
 <td style="text-align:right;">
-91
+89
 </td>
 <td style="text-align:right;">
 0.16
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-4.32e+04
+4.22e+04
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2280,10 +2318,10 @@ g
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
-4.32e+04
+4.22e+04
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2356,7 +2394,7 @@ a
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 5.40e+02
@@ -2394,7 +2432,7 @@ a
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 3.12e+04
@@ -2432,7 +2470,7 @@ t
 535
 </td>
 <td style="text-align:right;">
-93
+94
 </td>
 <td style="text-align:left;">
 2.03e+02
@@ -2461,19 +2499,19 @@ a
 c
 </td>
 <td style="text-align:right;">
-64
+63
 </td>
 <td style="text-align:right;">
 0.12
 </td>
 <td style="text-align:right;">
-523
+522
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-3.24e+01
+3.33e+01
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2493,25 +2531,25 @@ A/D.snp6180A
 a
 </td>
 <td style="text-align:right;">
-481
+480
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-91
+89
 </td>
 <td style="text-align:right;">
 0.16
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-1.75e+01
+1.82e+01
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2569,25 +2607,25 @@ B/D.snp6180A
 a
 </td>
 <td style="text-align:right;">
-69
+68
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-55
+54
 </td>
 <td style="text-align:right;">
 0.44
 </td>
 <td style="text-align:right;">
-124
+122
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-4.67e+01
+4.71e+01
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2607,25 +2645,25 @@ A/D.snp6247T
 t
 </td>
 <td style="text-align:right;">
-481
+480
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-91
+89
 </td>
 <td style="text-align:right;">
 0.16
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-4.32e+04
+4.22e+04
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2645,25 +2683,25 @@ A/D.snp6862T
 t
 </td>
 <td style="text-align:right;">
-529
+527
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-43
+42
 </td>
 <td style="text-align:right;">
-0.08
+0.07
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-8.71e+00
+8.46e+00
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2683,7 +2721,7 @@ A/C.snp7233A
 a
 </td>
 <td style="text-align:right;">
-468
+467
 </td>
 <td style="text-align:left;">
 c
@@ -2695,13 +2733,13 @@ c
 0.11
 </td>
 <td style="text-align:right;">
-523
+522
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-1.37e+03
+1.36e+03
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2721,25 +2759,25 @@ A/D.snp7233A
 a
 </td>
 <td style="text-align:right;">
-468
+467
 </td>
 <td style="text-align:left;">
 c
 </td>
 <td style="text-align:right;">
-104
+102
 </td>
 <td style="text-align:right;">
 0.18
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-3.00e+03
+2.93e+03
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2759,25 +2797,25 @@ A/D.snp7394C
 c
 </td>
 <td style="text-align:right;">
-495
+494
 </td>
 <td style="text-align:left;">
 t
 </td>
 <td style="text-align:right;">
-77
+75
 </td>
 <td style="text-align:right;">
 0.13
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-4.84e+02
+4.69e+02
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2797,25 +2835,25 @@ A/D.snp7395C
 c
 </td>
 <td style="text-align:right;">
-500
+499
 </td>
 <td style="text-align:left;">
 t
 </td>
 <td style="text-align:right;">
-72
+70
 </td>
 <td style="text-align:right;">
-0.13
+0.12
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-5.00e+02
+4.84e+02
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2835,7 +2873,7 @@ A/C.snp7435G
 g
 </td>
 <td style="text-align:right;">
-489
+488
 </td>
 <td style="text-align:left;">
 a
@@ -2847,13 +2885,13 @@ a
 0.07
 </td>
 <td style="text-align:right;">
-523
+522
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-7.66e+02
+7.65e+02
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2873,25 +2911,25 @@ A/D.snp7669C
 c
 </td>
 <td style="text-align:right;">
-482
+481
 </td>
 <td style="text-align:left;">
 t
 </td>
 <td style="text-align:right;">
-90
+88
 </td>
 <td style="text-align:right;">
-0.16
+0.15
 </td>
 <td style="text-align:right;">
-572
+569
 </td>
 <td style="text-align:right;">
 100
 </td>
 <td style="text-align:left;">
-2.14e+04
+2.08e+04
 </td>
 <td style="text-align:left;">
 &lt;0.001
@@ -2946,18 +2984,118 @@ URR
 positions_for_model <- unique(df$position); positions_for_model <- positions_for_model[!is.na(positions_for_model)]
 positions_for_model <- sort(positions_for_model)
 
-#Build a dataframe wiht the main positions and their nucleotides for each sample.
-SNPs_for_MODEL <- as.data.frame(REF_GENOME[,as.character(positions_for_model)])
-colnames(SNPs_for_MODEL) <- c(positions_for_model)
-write.csv(SNPs_for_MODEL, paste(wd_results, "SNP_Genome.csv", sep = ""))
-SNPs_for_MODEL[20:25,c(1,9:15)] %>%
-  kbl(caption = "Table 2: Part of the SNP_GENOME table, which contains the information for each sample and SNP") %>%
+#Which genes they belong? 
+gene_table <- t(table(gene.annotation(positions_for_model ,gene_annotation)[2]))
+gene_table %>%
+  kbl(caption = "Table 2: Gene distribution of the lineage-dependent SNPs") %>%
   kable_classic(full_width = F, html_font = "Calibri", position = "center")
 ```
 
 <table class=" lightable-classic" style="font-family: Calibri; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
-Table 2: Part of the SNP\_GENOME table, which contains the information
+Table 2: Gene distribution of the lineage-dependent SNPs
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+E1
+</th>
+<th style="text-align:right;">
+E1/E2
+</th>
+<th style="text-align:right;">
+E2
+</th>
+<th style="text-align:right;">
+E2/E4
+</th>
+<th style="text-align:right;">
+E2/E5
+</th>
+<th style="text-align:right;">
+E5
+</th>
+<th style="text-align:right;">
+E6
+</th>
+<th style="text-align:right;">
+E7
+</th>
+<th style="text-align:right;">
+L1
+</th>
+<th style="text-align:right;">
+L2
+</th>
+<th style="text-align:right;">
+L2/L1
+</th>
+<th style="text-align:right;">
+NA
+</th>
+<th style="text-align:right;">
+URR
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+</tbody>
+</table>
+
+``` r
+#Build a dataframe wiht the main positions and their nucleotides for each sample.
+SNPs_for_MODEL <- as.data.frame(REF_GENOME[,as.character(positions_for_model)])
+colnames(SNPs_for_MODEL) <- c(positions_for_model)
+write.csv(SNPs_for_MODEL, paste(wd_results, "SNP_Genome.csv", sep = ""))
+SNPs_for_MODEL[20:25,c(1:8)] %>%
+  kbl(caption = "Table 3: Part of the SNP_GENOME table, which contains the information for each sample and SNP") %>%
+  kable_classic(full_width = F, html_font = "Calibri", position = "center")
+```
+
+<table class=" lightable-classic" style="font-family: Calibri; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Table 3: Part of the SNP\_GENOME table, which contains the information
 for each sample and SNP
 </caption>
 <thead>
@@ -2968,25 +3106,25 @@ for each sample and SNP
 31
 </th>
 <th style="text-align:left;">
-1200
+109
 </th>
 <th style="text-align:left;">
-1416
+132
 </th>
 <th style="text-align:left;">
-1486
+350
 </th>
 <th style="text-align:left;">
-1515
+403
 </th>
 <th style="text-align:left;">
-1522
+647
 </th>
 <th style="text-align:left;">
-2220
+967
 </th>
 <th style="text-align:left;">
-2249
+1096
 </th>
 </tr>
 </thead>
@@ -3002,22 +3140,22 @@ c
 t
 </td>
 <td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
+t
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
 c
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-g
 </td>
 </tr>
 <tr>
@@ -3031,22 +3169,22 @@ c
 t
 </td>
 <td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
+t
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
 c
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-g
 </td>
 </tr>
 <tr>
@@ -3060,22 +3198,22 @@ c
 t
 </td>
 <td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
+t
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
 c
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-g
 </td>
 </tr>
 <tr>
@@ -3089,22 +3227,22 @@ c
 t
 </td>
 <td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
+t
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
 c
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-g
 </td>
 </tr>
 <tr>
@@ -3118,22 +3256,22 @@ c
 t
 </td>
 <td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
+t
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
 c
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-g
 </td>
 </tr>
 <tr>
@@ -3147,33 +3285,59 @@ t
 t
 </td>
 <td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
+t
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+g
+</td>
+<td style="text-align:left;">
 c
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-t
-</td>
-<td style="text-align:left;">
-g
-</td>
-<td style="text-align:left;">
-g
 </td>
 </tr>
 </tbody>
 </table>
 
-The GWAS showed a total of 55 SNPs that are significantly related to the
+``` r
+########################
+#### Manhattan plot ####
+########################
+# SNPs_OR_type
+# lapply(SNPs_OR_type, dim)
+
+#Manhattan plot options
+virus_size <- 7909; gene_bar_color <- "black";
+only.genes <- FALSE; position <- TRUE
+OR.size <- FALSE; Genebar <- TRUE; Lineages <- TRUE
+col <- "A"
+main <- "Manhattan Plot"
+xlab = "Genomic Range"
+
+source(paste(PC_path, "Codes/", "Manhattan_plot.R", sep = "/"))
+man
+```
+
+![](Figs/GWAS-1.png)<!-- -->
+
+``` r
+# ggsave(paste(wd_results, "GWAS/Total_GWAS.png", sep = ""),
+#        width = 25, height = 25)
+```
+
+The GWAS showed a total of 56 SNPs that are significantly related to the
 HPV16 Lineage.
 
 ## Machine learning to build a new model to assess HPV16-Lineage
 
-Reducing the HPV16 genome (7909 nucleotides) to 55 Lineage-dependent
+Reducing the HPV16 genome (7909 nucleotides) to 56 Lineage-dependent
 SNPs, we can start building new methods that will require fewer
 variables but with higher relevance. Those new models will be faster and
 will allow us to study HPV sequences with poorer sequencing quality.
@@ -3188,14 +3352,18 @@ ss <- 123456  #set.seed
 dataset <- SNPs_for_MODEL
 positions <- colnames(dataset)
 
-#Delete SNPs that doesn't belong to any gene
-gene_positions <- gene.annotation(positions, gene_annotation)
-No_gene_positions <- length(grep(TRUE, gene_positions$gene == "NA"))
-positions <- rownames(gene_positions[!gene_positions$gene == "NA",])
-
+####################################################################################
+# #Delete SNPs that doesn't belong to any gene
+# gene_positions <- gene.annotation(positions, gene_annotation)
+# No_gene_positions <- length(grep(TRUE, gene_positions$gene == "NA"))
+# positions <- rownames(gene_positions[!gene_positions$gene == "NA",])
+# 
 # Remove SNPs from dataset
-dataset <- dataset[,positions]; #dim(dataset)
-colnames(dataset) <- paste("snp", colnames(dataset) , sep = "") 
+# dataset <- dataset[,positions]; #dim(dataset)
+####################################################################################
+
+#Add "snp" to the colnames
+colnames(dataset) <- paste("snp", colnames(dataset) , sep = "")
 
 #Add Lineage (assessed by MLT) to the dataset
 if (identical(as.character(PHENO$Sample), rownames(dataset)) == TRUE){
@@ -3252,12 +3420,9 @@ set.seed(ss)
 fit.rf <- caret::train(Lineage~., data=dataset, method="rf", metric=metric, trControl=control)
 ```
 
-A total of 3 SNPs were excluded from the model since they don’t belong
-to any gene.
-
 ## Which is the best model?
 
-To assess HPV16 lineage, we built 5 different models with the 52
+To assess HPV16 lineage, we built 5 different models with the 56
 Lineage-related SNPs and based on different training-test algorithms:
 Random Forest (RF), Support Vector Machine (SVM), K-nearest neighbour
 (KNN), Classification and Regression Trees (CART), and latent Dirichlet
@@ -3279,17 +3444,17 @@ summary(results)
     ## 
     ## Accuracy 
     ##           Min.   1st Qu.    Median      Mean   3rd Qu. Max. NA's
-    ## cart 0.9411765 0.9423077 0.9449495 0.9598798 0.9756787    1    0
-    ## knn  0.9807692 1.0000000 1.0000000 0.9962587 1.0000000    1    0
-    ## svm  0.9807692 1.0000000 1.0000000 0.9962587 1.0000000    1    0
-    ## rf   0.9615385 1.0000000 1.0000000 0.9957265 1.0000000    1    1
+    ## cart 0.9038462 0.9423077 0.9520903 0.9576489 0.9762337    1    0
+    ## knn  0.9615385 1.0000000 1.0000000 0.9961538 1.0000000    1    0
+    ## svm  0.9807692 1.0000000 1.0000000 0.9961538 1.0000000    1    0
+    ## rf   0.9803922 1.0000000 1.0000000 0.9978214 1.0000000    1    1
     ## 
     ## Kappa 
     ##           Min.   1st Qu.    Median      Mean   3rd Qu. Max. NA's
-    ## cart 0.8596330 0.8602151 0.8776607 0.9062005 0.9430039    1    0
-    ## knn  0.9573770 1.0000000 1.0000000 0.9918287 1.0000000    1    0
-    ## svm  0.9560440 1.0000000 1.0000000 0.9916073 1.0000000    1    0
-    ## rf   0.9148239 1.0000000 1.0000000 0.9905360 1.0000000    1    1
+    ## cart 0.7870598 0.8602151 0.8855012 0.9008514 0.9467474    1    0
+    ## knn  0.9148239 1.0000000 1.0000000 0.9914824 1.0000000    1    0
+    ## svm  0.9548611 1.0000000 1.0000000 0.9909839 1.0000000    1    0
+    ## rf   0.9514286 1.0000000 1.0000000 0.9946032 1.0000000    1    1
 
 ``` r
 #Plot accuracy and kappa
@@ -3301,8 +3466,8 @@ similar accuracy and kappa values and LDA-based model failed.
 
 ## Validation
 
-The 80% of the samples (n = 520) were used to train and test the model,
-and the remaining 20% (n = 128) has been used to check the sensitivity
+The 80% of the samples (n = 518) were used to train and test the model,
+and the remaining 20% (n = 127) has been used to check the sensitivity
 and specificity of the models.
 
 ``` r
@@ -3354,10 +3519,10 @@ set.seed(ss)
 predictions.knn <- predict(fit.knn, validation[,1:(ncol(validation)-1)])
 
 par(mfrow=c(1,2),oma = c(0, 0, 4, 0))
-plot.cm(predictions.svm, validation$Lineage, rescales = F)
-mtext("SVM", outer = F, cex = 1)
-plot.cm(predictions.knn, validation$Lineage, rescales = F)
-mtext("KNN", outer = F, cex = 1)
+plot.cm(predictions.svm, validation$Lineage, rescales = F, xlab = "MLT", ylab = "SVM")
+# mtext("SVM", outer = F, cex = 1)
+plot.cm(predictions.knn, validation$Lineage, rescales = F, xlab = "MLT", ylab = "KNN")
+# mtext("KNN", outer = F, cex = 1)
 mtext("Validation Matrix", outer = T, cex = 2)
 ```
 
@@ -3370,7 +3535,7 @@ predictions.rf <- predict(fit.rf, validation[,1:(ncol(validation)-1)])
 
 par(mfrow=c(1,1),oma = c(0, 0, 2, 0))
 plot.cm(predictions.rf, validation$Lineage, rescales = F)
-mtext("Random Forest Validation Matrix", outer = T, cex = 2)
+mtext("Random Forest Validation Matrix", outer = T, cex = 2, xlab = "MLT", ylab = "RF")
 ```
 
 ![](Figs/validation-2.png)<!-- -->
