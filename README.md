@@ -1,4 +1,4 @@
-# HPV16-linpred 
+# A Straightforward HPV16 Lineage Classification Based on Machine Learning
 
 Human Papillomavirus (HPV) is the causal agent of 5% of cancers worldwide and the
 main cause of cervical cancer and it is also associated with a significant percentage of
